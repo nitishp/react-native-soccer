@@ -2,7 +2,8 @@ import React, {Component} from 'react';
 import {View,
         Text,
         StyleSheet,
-        Dimensions,} from 'react-native';
+        Dimensions,
+        Image} from 'react-native';
 
 
 const LC_IDLE = 0;
@@ -77,7 +78,7 @@ class Soccer extends Component {
         }
 
         // Reset after falling down
-        if(nextState.y > SCREEN_HEIGHT) {
+        if(nextState.y > SCREEN_HEIGHT + BALL_HEIGHT) {
             nextState.y = FLOOR_Y;
             nextState.x = FLOOR_X;
             nextState.lifeCycle = LC_IDLE;
@@ -107,10 +108,10 @@ class Soccer extends Component {
             top: this.state.y - (BALL_HEIGHT / 2),
         }
         return (
-            <View style={[styles.ball, position]}
-                  onStartShouldSetResponder={(event) => this.onTap(event.nativeEvent)}>
-                  <Text>HI</Text>
-            </View>
+            <Image source={require('./images/soccer.png')}
+                    style={[styles.ball, position]}
+                    onStartShouldSetResponder={(event) => this.onTap(event.nativeEvent)}
+            />
         );
     }
 }
@@ -119,7 +120,6 @@ const styles = StyleSheet.create({
     ball: {
         width: BALL_WIDTH,
         height: BALL_HEIGHT,
-        backgroundColor: 'red',
     },
 });
 
