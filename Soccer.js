@@ -5,6 +5,7 @@ import {View,
         Dimensions,
         Image} from 'react-native';
 import Score from './components/Score';
+import Emoji from './components/Emoji';
 
 const LC_IDLE = 0;
 const LC_RUNNING = 1;
@@ -19,6 +20,7 @@ const BALL_HEIGHT = SCREEN_WIDTH * 0.33;
 const FLOOR_Y = SCREEN_HEIGHT - BALL_HEIGHT;
 const FLOOR_X = SCREEN_WIDTH / 2;
 const SCORE_Y = SCREEN_HEIGHT / 6;
+const EMOJI_Y = SCREEN_HEIGHT / 3;
 
 class Soccer extends Component {
 
@@ -120,6 +122,7 @@ class Soccer extends Component {
         return (
             <View>
                 <Score score={this.state.score} y={SCORE_Y} scored={this.state.scored}/>
+                <Emoji scored={this.state.scored} y={EMOJI_Y}/>
                 <Image source={require('./images/soccer.png')}
                         style={[styles.ball, position]}
                         onStartShouldSetResponder={(event) => this.onTap(event.nativeEvent)}
