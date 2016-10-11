@@ -5,6 +5,14 @@ class Score extends Component {
 
     constructor(props) {
         super(props);
+        this.animationConfig = {
+            toValue: 1.0,
+            friction: 50,
+            tension: 1000,
+        }
+        this.state = {
+            bounceValue : new Animated.Value(0),
+        }
     }
 
     render() {
@@ -12,15 +20,34 @@ class Score extends Component {
         let containerPosition = {
             top: this.props.y,
             width: windowWidth,
+            transform: [
+                {scale: this.state.bounceValue},
+            ],
         }
 
         return (
-            <View style={[styles.container, containerPosition]}>
+            <Animated.View style={[styles.container, containerPosition]}>
                 <Text style={styles.score}>
                     {this.props.score}
                 </Text>
-            </View>
+            </Animated.View>
         );
+    }
+
+    componentDidUpdate() {
+        if(this.props.scored === true) {
+            this.bounce();
+        }
+    }
+
+    componentDidMount() {
+        this.bounce();
+    }
+
+    bounce() {
+        Animated.spring(this.state.bounceValue, this.animationConfig).stop();
+        this.state.bounceValue.setValue(0.5);
+        Animated.spring(this.state.bounceValue, this.animationConfig).start();
     }
 }
 
