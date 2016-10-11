@@ -4,7 +4,7 @@ import {View,
         StyleSheet,
         Dimensions,
         Image} from 'react-native';
-
+import Score from './components/Score';
 
 const LC_IDLE = 0;
 const LC_RUNNING = 1;
@@ -18,6 +18,7 @@ const BALL_WIDTH = SCREEN_WIDTH * 0.33;
 const BALL_HEIGHT = SCREEN_WIDTH * 0.33;
 const FLOOR_Y = SCREEN_HEIGHT - BALL_HEIGHT;
 const FLOOR_X = SCREEN_WIDTH / 2;
+const SCORE_Y = SCREEN_HEIGHT / 6;
 
 class Soccer extends Component {
 
@@ -30,6 +31,8 @@ class Soccer extends Component {
             vx: 0,
             vy: 0,
             lifeCycle: LC_IDLE,
+            score: 0,
+            scored: false,
         };
     }
 
@@ -44,20 +47,27 @@ class Soccer extends Component {
     }
 
     onTap(event) {
-        let centerX = BALL_WIDTH / 2;
-        let centerY = BALL_HEIGHT / 2;
-        if(this.state.lifeCycle !== LC_TAPPED) {
+        if(this.state.lifeCycle === LC_TAPPED) {
+            this.setState({
+                lifeCycle: LC_RUNNING,
+                scored: false,
+            });
+        }
+        else {
+            let centerX = BALL_WIDTH / 2;
+            let centerY = BALL_HEIGHT / 2;
             let velocityX = ((centerX - event.locationX) / SCREEN_WIDTH)
                                 * TAPPED_VELOCITY;
-            console.log(event.locationX - centerX);
-
             let velocityY = -TAPPED_VELOCITY;
             this.setState({
                 vx: velocityX,
                 vy: velocityY,
-                lifeCycle: LC_RUNNING,
-            })
+                score: this.state.score + 1,
+                lifeCycle: LC_TAPPED,
+                scored: true,
+            });
         }
+        return false;
     }
 
     updatePosition(nextState) {
@@ -66,7 +76,6 @@ class Soccer extends Component {
 
         // Hit the left wall
         if(nextState.x < BALL_WIDTH / 2) {
-            console.log("IN HERE");
             nextState.vx = -nextState.vx;
             nextState.x = BALL_WIDTH / 2;
         }
@@ -82,6 +91,7 @@ class Soccer extends Component {
             nextState.y = FLOOR_Y;
             nextState.x = FLOOR_X;
             nextState.lifeCycle = LC_IDLE;
+            nextState.score = 0;
         }
     }
 
@@ -108,10 +118,13 @@ class Soccer extends Component {
             top: this.state.y - (BALL_HEIGHT / 2),
         }
         return (
-            <Image source={require('./images/soccer.png')}
-                    style={[styles.ball, position]}
-                    onStartShouldSetResponder={(event) => this.onTap(event.nativeEvent)}
-            />
+            <View>
+                <Score score={this.state.score} y={SCORE_Y} scored={this.state.scored}/>
+                <Image source={require('./images/soccer.png')}
+                        style={[styles.ball, position]}
+                        onStartShouldSetResponder={(event) => this.onTap(event.nativeEvent)}
+                />
+            </View>
         );
     }
 }
