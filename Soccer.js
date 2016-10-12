@@ -35,6 +35,7 @@ class Soccer extends Component {
             lifeCycle: LC_IDLE,
             score: 0,
             scored: false,
+            lost: false,
         };
     }
 
@@ -67,6 +68,7 @@ class Soccer extends Component {
                 score: this.state.score + 1,
                 lifeCycle: LC_TAPPED,
                 scored: true,
+                lost: false,
             });
         }
         return false;
@@ -94,6 +96,7 @@ class Soccer extends Component {
             nextState.x = FLOOR_X;
             nextState.lifeCycle = LC_IDLE;
             nextState.score = 0;
+            nextState.lost = true;
         }
     }
 
@@ -122,7 +125,7 @@ class Soccer extends Component {
         return (
             <View>
                 <Score score={this.state.score} y={SCORE_Y} scored={this.state.scored}/>
-                <Emoji scored={this.state.scored} y={EMOJI_Y}/>
+                <Emoji scored={this.state.scored} y={EMOJI_Y} lost={this.state.lost}/>
                 <Image source={require('./images/soccer.png')}
                         style={[styles.ball, position]}
                         onStartShouldSetResponder={(event) => this.onTap(event.nativeEvent)}
