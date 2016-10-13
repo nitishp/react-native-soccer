@@ -7,12 +7,12 @@ class Score extends Component {
         super(props);
         this.animationConfig = {
             toValue: 1.0,
-            friction: 50,
-            tension: 1000,
+            duration: 200,
         }
         this.state = {
             bounceValue : new Animated.Value(0),
         }
+        this.animation = Animated.timing(this.state.bounceValue, this.animationConfig);
     }
 
     render() {
@@ -35,9 +35,11 @@ class Score extends Component {
     }
 
     componentDidUpdate() {
-        if(this.props.scored === true) {
-            this.bounce();
-        }
+        this.bounce();
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        return nextProps.scored === true && nextProps.scored !== this.props.scored;
     }
 
     componentDidMount() {
@@ -45,9 +47,8 @@ class Score extends Component {
     }
 
     bounce() {
-        Animated.spring(this.state.bounceValue, this.animationConfig).stop();
         this.state.bounceValue.setValue(0.5);
-        Animated.spring(this.state.bounceValue, this.animationConfig).start();
+        this.animation.start();
     }
 }
 

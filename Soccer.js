@@ -99,6 +99,7 @@ class Soccer extends Component {
             nextState.lifeCycle = LC_IDLE;
             nextState.score = 0;
             nextState.lost = true;
+            nextState.scored = false;
         }
     }
 
