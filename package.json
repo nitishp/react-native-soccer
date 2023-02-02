@@ -1,12 +1,22 @@
 {
-  "name": "Soccer",
+  "name": "keepup",
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node node_modules/react-native/local-cli/cli.js start"
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web"
   },
   "dependencies": {
-    "react": "15.3.2",
-    "react-native": "0.34.1"
+    "@types/react": "~18.0.24",
+    "@types/react-native": "~0.70.6",
+    "expo": "^47.0.13",
+    "expo-haptics": "^12.0.1",
+    "expo-splash-screen": "^0.17.5",
+    "metro-core": "^0.74.1",
+    "react": "18.1.0",
+    "react-native": "0.70.5",
+    "typescript": "^4.6.3"
   }
 }

@@ -52,6 +52,7 @@ class Emoji extends Component {
             {
                 toValue: 0,
                 duration: 1000,
+                useNativeDriver: true
             }
         ).start();
     }

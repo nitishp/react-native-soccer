@@ -1,19 +1,16 @@
 import React, {Component} from 'react';
-import {View,
-        Text,
-        StyleSheet,
-        Dimensions,
-        Image} from 'react-native';
+import {View,Text, StyleSheet,Dimensions,Image,Modal,TouchableOpacity,TouchableWithoutFeedback} from 'react-native';
+import * as Haptics from 'expo-haptics';
 import Score from './components/Score';
 import Emoji from './components/Emoji';
+import * as All  from './images';
 
 const LC_IDLE = 0;
 const LC_RUNNING = 1;
 const LC_TAPPED = 2;
-const GRAVITY = 0.8;
+const GRAVITY = 0.6;
 const TAPPED_VELOCITY = 20;
 const ROTATION_FACTOR = 7;
-
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const BALL_WIDTH = SCREEN_WIDTH * 0.33;
@@ -22,9 +19,17 @@ const FLOOR_Y = SCREEN_HEIGHT - BALL_HEIGHT;
 const FLOOR_X = SCREEN_WIDTH / 2;
 const SCORE_Y = SCREEN_HEIGHT / 6;
 const EMOJI_Y = SCREEN_HEIGHT / 3;
+const sports = ['soccer', 'baseball', 'basketball', 'football', 'golf', 'tennis', 'hockey']
+
+function Sports({sport, set}) {
+    return (
+        <TouchableOpacity onPress={()=> set(sport)}>
+        <Image style={{width: Dimensions.get('window').width * 0.3, height: Dimensions.get('window').width * 0.3, marginBottom: 15}} source={All[`${sport}`]}/>
+        </TouchableOpacity>
+    )
+}
 
 class Soccer extends Component {
-
     constructor(props) {
         super(props);
         this.interval = null;
@@ -38,6 +43,9 @@ class Soccer extends Component {
             scored: false,
             lost: false,
             rotate: 0,
+            sport: All.soccer,
+            visible: true,
+            button: true
         };
     }
 
@@ -52,6 +60,8 @@ class Soccer extends Component {
     }
 
     onTap(event) {
+        Haptics.selectionAsync()
+        this.setState({button: false})
         if(this.state.lifeCycle === LC_TAPPED) {
             this.setState({
                 lifeCycle: LC_RUNNING,
@@ -61,8 +71,7 @@ class Soccer extends Component {
         else {
             let centerX = BALL_WIDTH / 2;
             let centerY = BALL_HEIGHT / 2;
-            let velocityX = ((centerX - event.locationX) / SCREEN_WIDTH)
-                                * TAPPED_VELOCITY;
+            let velocityX = ((centerX - event.locationX) / SCREEN_WIDTH) * TAPPED_VELOCITY;
             let velocityY = -TAPPED_VELOCITY;
             this.setState({
                 vx: velocityX,
@@ -82,18 +91,19 @@ class Soccer extends Component {
         nextState.rotate += ROTATION_FACTOR * nextState.vx;
         // Hit the left wall
         if(nextState.x < BALL_WIDTH / 2) {
+            Haptics.selectionAsync()
             nextState.vx = -nextState.vx;
             nextState.x = BALL_WIDTH / 2;
         }
-
         // Hit the right wall
         if(nextState.x > SCREEN_WIDTH - BALL_WIDTH / 2) {
+            Haptics.selectionAsync()
             nextState.vx = -nextState.vx;
             nextState.x = SCREEN_WIDTH - BALL_WIDTH / 2;
         }
-
         // Reset after falling down
         if(nextState.y > SCREEN_HEIGHT + BALL_HEIGHT) {
+            Haptics.selectionAsync()
             nextState.y = FLOOR_Y;
             nextState.x = FLOOR_X;
             nextState.lifeCycle = LC_IDLE;
@@ -109,15 +119,18 @@ class Soccer extends Component {
 
     update() {
         if(this.state.lifeCycle === LC_IDLE) {
+            this.setState({button: true})
             return;
         }
-
         let nextState = Object.assign({}, this.state);
-
         this.updatePosition(nextState);
         this.updateVelocity(nextState);
-
         this.setState(nextState);
+    }
+
+    setSport(sport){
+        Haptics.selectionAsync()
+        this.setState({visible: false, sport: All[`${sport}`]})
     }
 
     render() {
@@ -134,10 +147,32 @@ class Soccer extends Component {
             <View>
                 <Score score={this.state.score} y={SCORE_Y} scored={this.state.scored}/>
                 <Emoji scored={this.state.scored} y={EMOJI_Y} lost={this.state.lost}/>
-                <Image source={require('./images/soccer.png')}
-                        style={[styles.ball, position, rotation]}
-                        onStartShouldSetResponder={(event) => this.onTap(event.nativeEvent)}
-                />
+                <TouchableWithoutFeedback style={{padding: 20}}
+                onPress={(event) => this.onTap(event.nativeEvent)}
+                        onPressIn={(event) => this.onTap(event.nativeEvent)}
+                        onPressOut={(event) => this.onTap(event.nativeEvent)}>
+                            <Image source={this.state.sport} style={[styles.ball, position, rotation]}/>
+                        </TouchableWithoutFeedback>
+                        <Modal animationType='slide' presentationStyle='formSheet' visible={this.state.visible}>
+                        <View style={{ alignItems: "center", marginTop: Dimensions.get('window').height * 0.2}}>
+                            <Text style={{fontSize: "40", fontWeight: "200", marginBottom: 20}}>
+                                Choose your sport
+                            </Text>
+                            <View style={{flexDirection: "row", flexWrap: "wrap", justifyContent:"space-evenly"}}>
+                            {sports.map(sport => {return <Sports key={sport} set={() => this.setSport(sport)} sport={sport} /> })}
+                            </View>
+                        </View>
+                        </Modal>
+                        {this.state.button == true && <TouchableOpacity onPressIn={()=> {this.setState({visible: true}), Haptics.selectionAsync()}} 
+                        style={{padding: 10, height: 55, width: 55, position: 'absolute', bottom: 30, right: 30, borderColor: '#e7e7e6', borderWidth: 0.5, shadowColor: "#555a74", 
+              shadowOffset: { height: 0.5, width: 0.5 }, 
+              shadowOpacity: 0.5, 
+              shadowRadius: 0.5, 
+              backgroundColor: "white",
+              borderRadius: 5,
+              elevation: 8, 
+              justifyContent: 'center',
+              alignItems: 'center'}}><Image style={{height: 50, width: 50}} source={require('./images/sportballs.png')}/></TouchableOpacity>}
             </View>
         );
     }

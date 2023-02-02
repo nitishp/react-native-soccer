@@ -1,0 +1,42 @@
+{
+  "expo": {
+    "name": "Tap It Up Sports",
+    "slug": "Tap-It-Up-Sports",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./images/soccer.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./images/soccer.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.konjo.tapitupsports",
+      "buildNumber": "6",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "versionCode": 6,
+      "adaptiveIcon": {
+        "foregroundImage": "./images/soccer.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.konjo.tapitupsports"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "78531fa9-4fcc-44cc-a3ae-5dd1bd5b427d"
+      }
+    }
+  }
+}
