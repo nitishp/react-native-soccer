@@ -8,6 +8,7 @@ class Score extends Component {
         this.animationConfig = {
             toValue: 1.0,
             duration: 200,
+            useNativeDriver: true
         }
         this.state = {
             bounceValue : new Animated.Value(0),
